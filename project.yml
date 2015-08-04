@@ -1,0 +1,154 @@
+---
+
+# Notes:
+# Sample project C code is not presently written to produce a release artifact.
+# As such, release build options are disabled.
+# This sample, therefore, only demonstrates running a collection of unit tests.
+
+:project:
+  :use_exceptions: FALSE
+  :use_test_preprocessor: TRUE
+  :use_auxiliary_dependencies: TRUE
+  :build_root: build
+  :release_build: TRUE
+  :test_file_prefix: test_
+
+:release_build:
+  :output: try-embedded-tdd.hex
+  :use_assembly: FALSE
+
+:environment:
+
+:extension:
+  :executable: .d43
+
+:paths:
+  :test:
+    - +:test/**
+    - -:test/support
+  :source:
+    - src/**
+  :support:
+    - test/support
+  :include:
+
+:defines:
+  # in order to add common defines:
+  #  1) remove the trailing [] from the :common: section
+  #  2) add entries to the :common: section (e.g. :test: has TEST defined)
+  :commmon: &common_defines
+    - UNITY_INT_WIDTH=16
+    - CMOCK_MEM_INDEX_TYPE=uint16_t
+    - CMOCK_MEM_PTR_AS_INT=uint16_t
+    - CMOCK_MEM_ALIGN=1
+    - CMOCK_MEM_SIZE=4096
+  :test:
+    - *common_defines
+    - TEST
+  :test_preprocess:
+    - *common_defines
+    - TEST
+
+:cmock:
+  :mock_prefix: mock_
+  :when_no_prototypes: :warn
+  :enforce_strict_ordering: TRUE
+  :plugins:
+    - :ignore
+    - :callback
+  :treat_as:
+    uint8:    HEX8
+    uint16:   HEX16
+    uint32:   UINT32
+    int8:     INT8
+    bool:     UINT8
+
+#:tools:
+# Ceedling defaults to using gcc for compiling, linking, etc.
+# As [:tools] is blank, gcc will be used (so long as it's in your system path)
+# See documentation to configure a given toolchain for use
+:tools:
+  :test_compiler:
+    :executable: icc430.exe
+    :arguments:
+    - "${1}"
+    - -o "${2}"
+    - --no_cse
+    - --no_unroll
+    - --no_inline
+    - --no_code_motion
+    - --no_tbaa
+    - --debug
+    - -D__MSP430GENERIC__
+    - -e
+    - --double=32
+    - --dlib_config "C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\430\LIB\DLIB\dl430fn.h"
+    - -I"$": COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR
+    - -Ol
+    - --multiplier=16
+    - --segment __data16=DATA16
+    - --segment __data20=DATA20
+    - --diag_suppress Pa050
+    - --diag_suppress Pe111
+    - -DTEST
+  :test_linker:
+    :executable: xlink.exe
+    :arguments:
+    - "${1}"
+    - -o "${2}"
+    - -s __program_start
+    - -f "C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\430\config\lnk430f5438.xcl"
+    - -f "C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\430\config\multiplier.xcl"
+    - -D_STACK_SIZE=50
+    - -rt "C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\430\lib\dlib\dl430fn.r43"
+    - -D_DATA16_HEAP_SIZE=50
+    - -s __program_start
+    - -D_DATA20_HEAP_SIZE=50
+  :test_fixture:
+    :executable: D:\Documents\try-embedded-tdd\TestProj.cspy.bat
+    :name: "msp430 simulator test fixture"
+    :stderr_redirect: :win #inform Ceedling what model of $stderr capture to use
+    :arguments:
+    - "${1}"
+  :release_compiler:
+    :executable: icc430.exe
+    :arguments:
+    - "${1}"
+    - -o "${2}"
+    - --no_cse
+    - --no_unroll
+    - --no_inline
+    - --no_code_motion
+    - --no_tbaa
+    - --debug
+    - -D__MSP430GENERIC__
+    - -e
+    - --double=32
+    - --dlib_config "C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\430\LIB\DLIB\dl430fn.h"
+    - -I"$": COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR
+    - -Ol
+    - --multiplier=16
+    - --segment __data16=DATA16
+    - --segment __data20=DATA20
+    - --diag_suppress Pa050
+    - --diag_suppress Pe111
+  :release_linker:
+    :executable: xlink.exe
+    :arguments:
+    - "${1}"
+    - -o "${2}"
+    - -s __program_start
+    - -f "C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\430\config\lnk430f5438.xcl"
+    - -f "C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\430\config\multiplier.xcl"
+    - -D_STACK_SIZE=50
+    - -rt "C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\430\lib\dlib\dl430fn.r43"
+    - -D_DATA16_HEAP_SIZE=50
+    - -s __program_start
+    - -D_DATA20_HEAP_SIZE=50
+:plugins:
+  :load_paths:
+    - vendor/ceedling/plugins
+  :enabled:
+    - stdout_pretty_tests_report
+    - module_generator
+...

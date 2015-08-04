@@ -1,0 +1,36 @@
+---
+:source:
+  :path: test
+  :file: test_led_driver.c
+:successes:
+- :test: test_LedOffAfterInitial
+  :line: 19
+  :message: ''
+- :test: test_LedOnAfterTurnOn
+  :line: 28
+  :message: ''
+- :test: test_LedOffAfterTurnOff
+  :line: 38
+  :message: ''
+:failures: []
+:ignores: []
+:counts:
+  :total: 3
+  :passed: 3
+  :failed: 0
+  :ignored: 0
+:stdout:
+- ''
+- 'd:\Documents\try-embedded-tdd>"C:\Program Files (x86)\IAR Systems\Embedded Workbench
+  6.5\common\bin\cspybat" "C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\430\bin\430proc.dll"
+  "C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\430\bin\430sim.dll"  build/test/out/test_led_driver.d43
+  --plugin "C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\430\bin\430bat.dll"
+  --backend -B "--hardware_multiplier" "32" "--hwmult_type" "8" "-p" "C:\Program Files
+  (x86)\IAR Systems\Embedded Workbench 6.5\430\config\msp430fr5739.ddf" "--core=430Xv2"
+  "--data_model=small" "--iv_base" "0xFF90" "--odd_word_check" "-d" "sim" "--derivativeSim"
+  "MSP430FR5739" '
+- ''
+- "     IAR C-SPY Command Line Utility V6.6.3.2839"
+- "     Copyright 2000-2013 IAR Systems AB."
+- ''
+- ''
